@@ -1,13 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.32802.440
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32210.238
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SignalRExample", "Server\SignalRExample.csproj", "{78A09C55-19C8-4B5E-A369-346E42212E8A}"
 EndProject
 Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "Client", "Client\", "{62F5E8AA-EC5B-4963-A442-C8699D05C941}"
 	ProjectSection(WebsiteProperties) = preProject
-		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.0"
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.5"
 		Debug.AspNetCompiler.VirtualPath = "/localhost_55978"
 		Debug.AspNetCompiler.PhysicalPath = "Client\"
 		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_55978\"
@@ -23,6 +23,7 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "Client", "Client\", "{62F5E
 		Release.AspNetCompiler.FixedNames = "false"
 		Release.AspNetCompiler.Debug = "False"
 		VWDPort = "55978"
+		SlnRelativePath = "Client\"
 	EndProjectSection
 EndProject
 Global

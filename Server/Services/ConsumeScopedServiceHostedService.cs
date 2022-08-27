@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using SignalRExample.Hubs;
 using SignalRExample.Model;
 using System;
 using System.Threading;
@@ -41,11 +42,11 @@ namespace SignalRExample.Services
     public class ConsumeScopedServiceHostedService : BackgroundService
     {
         private int executionCount = 0;
-        private readonly IHubContext<BroadcastHub, IHubClient> _hubContext;
+        private readonly IHubContext<NotifyHub, IHubClient> _hubContext;
         private readonly ILogger<ConsumeScopedServiceHostedService> _logger;
         private Timer? _timer = null;
 
-        public ConsumeScopedServiceHostedService(IServiceProvider services, ILogger<ConsumeScopedServiceHostedService> logger, IHubContext<BroadcastHub, IHubClient> hubContext)
+        public ConsumeScopedServiceHostedService(IServiceProvider services, ILogger<ConsumeScopedServiceHostedService> logger, IHubContext<NotifyHub, IHubClient> hubContext)
         {
             Services = services;
             _logger = logger;

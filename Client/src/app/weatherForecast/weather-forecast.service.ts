@@ -8,7 +8,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
   providedIn: 'root',
 })
 export class WeatherForecastService {
-  private weatherForecastUrl = environment.baseUrl + 'api/WeatherForecast';
+  private weatherForecastUrl = environment.baseUrl + 'WeatherForecast';
 
   constructor(private http: HttpClient) {}
 

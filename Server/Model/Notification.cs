@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace SignalRExample.Model
+﻿namespace SignalRExample.Model
 {
     public class Notification
     {
         public NotificationType Type { get; set; }
+        public object Result { get; set; }
     }
 
 

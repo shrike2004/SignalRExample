@@ -1,14 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
+using SignalRExample.Hubs;
+using SignalRExample.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Hosting;
-using SignalRExample.Services;
-using SignalRExample.Model;
-using Microsoft.AspNetCore.SignalR;
-using SignalRExample.Hubs;
 
 namespace SignalRExample.Controllers
 {
@@ -53,11 +51,13 @@ namespace SignalRExample.Controllers
             };
             await _hubContext.Clients.All.SendMessage(startNotification);
 
-            await Task.Delay(10000);
+            await Task.Delay(5000);
 
             Notification completeNotification = new Notification()
             {
-                Type = NotificationType.Complete
+                Type = NotificationType.Complete,
+                Result = weatherForecast
+
             };
             await _hubContext.Clients.All.SendMessage(completeNotification);
         }
