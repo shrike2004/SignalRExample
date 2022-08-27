@@ -1,0 +1,32 @@
+<div class="card">  
+    <div class="card-header">  
+        {{pageTitle}}  
+    </div>  
+    <div class="card-body">  
+        <div class="table-responsive">  
+            <table class="table mb-0" *ngIf="weatherForecasts && weatherForecasts.length">  
+                <thead>  
+                    <tr>  
+                        <th>Name</th>  
+                        <th>Address</th>  
+                        <th>Gender</th>  
+                        <th>Company</th>  
+                        <th>Designation</th>  
+                        <th></th>  
+                        <th></th>  
+                    </tr>  
+                </thead>  
+                <tbody>  
+                    <tr *ngFor="let weatherForecasts of weatherForecasts">  
+                        <td>{{ weatherForecasts.date }}</td>  
+                        <td>{{ weatherForecasts.temperatureC }}</td>  
+                        <td>{{ weatherForecasts.summary }}</td>  
+                    </tr>  
+                </tbody>  
+            </table>  
+        </div>  
+    </div>  
+</div>  
+<div *ngIf="errorMessage" class="alert alert-danger">  
+    Error: {{ errorMessage }}  
+</div>  
