@@ -18,6 +18,15 @@ export class WeatherForecastService {
       .pipe(catchError(this.handleError));
   }
 
+  createWeatherForecast(): Observable<WeatherForecast> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this.http
+      .post<WeatherForecast>(this.weatherForecastUrl, null, {
+        headers: headers,
+      })
+      .pipe(catchError(this.handleError));
+  }
+
   private handleError(err: any) {
     let errorMessage: string;
     if (err.error instanceof ErrorEvent) {

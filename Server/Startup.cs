@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using SignalRExample.Hubs;
+using System.Text.Json.Serialization;
 
 namespace SignalRExample
 {
@@ -23,7 +24,11 @@ namespace SignalRExample
             //services.AddHostedService<ConsumeScopedServiceHostedService>();
             //services.AddScoped<IScopedProcessingService, ScopedProcessingService>();
 
-            services.AddControllers();
+            services.AddControllers()
+                .AddJsonOptions(opts =>
+                {
+                    opts.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+                });
 
             services.AddSwaggerGen(c =>
             {
@@ -32,7 +37,10 @@ namespace SignalRExample
 
             services.AddCors();
 
-            services.AddSignalR();
+            services.AddSignalR().AddJsonProtocol(options =>
+            {
+                options.PayloadSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

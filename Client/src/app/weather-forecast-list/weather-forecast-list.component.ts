@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { WeatherForecast } from '../weather-forecast';
-import { WeatherForecastService } from '../weather-forecast.service';
+import { WeatherForecast } from '../weatherForecast/weather-forecast';
+import { WeatherForecastService } from '../weatherForecast/weather-forecast.service';
 import * as signalR from '@microsoft/signalr';
 import { environment } from 'src/environments/environment';
 
@@ -14,6 +14,7 @@ export class WeatherForecastListComponent implements OnInit {
   filteredWeatherForecast: WeatherForecast[] = [];
   weatherForecasts: WeatherForecast[] = [];
   errorMessage = '';
+  loading = false;
 
   constructor(private weatherForecastService: WeatherForecastService) {}
 
@@ -34,8 +35,12 @@ export class WeatherForecastListComponent implements OnInit {
         return console.error(err.toString());
       });
 
-    connection.on('BroadcastMessage', () => {
-      this.getWeatherForecastData();
+    connection.on('SendMessage', (x) => {
+      this.loading = x.type === 'Start';
+      if (x.result) {
+        this.weatherForecasts.push(x.result);
+      }
+      console.log(x);
     });
   }
 
@@ -47,6 +52,12 @@ export class WeatherForecastListComponent implements OnInit {
       },
       (error) => (this.errorMessage = <any>error)
     );
+  }
+
+  create(): void {
+    this.weatherForecastService
+      .createWeatherForecast()
+      .subscribe((error: any) => (this.errorMessage = <any>error));
   }
 
   onSaveComplete(): void {

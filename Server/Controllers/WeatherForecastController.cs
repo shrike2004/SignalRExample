@@ -14,6 +14,7 @@ namespace SignalRExample.Controllers
     [Route("[controller]")]
     public class WeatherForecastController : ControllerBase
     {
+        Random rng = new Random();
         private readonly IHubContext<NotifyHub, IHubClient> _hubContext;
 
         private static readonly string[] Summaries = new[]
@@ -32,7 +33,7 @@ namespace SignalRExample.Controllers
         [HttpGet]
         public IEnumerable<WeatherForecast> Get()
         {
-            var rng = new Random();
+
             return Enumerable.Range(1, 5).Select(index => new WeatherForecast
             {
                 Date = DateTime.Now.AddDays(index),
@@ -43,7 +44,7 @@ namespace SignalRExample.Controllers
         }
 
         [HttpPost]
-        public async Task Create(WeatherForecast weatherForecast)
+        public async Task Create()
         {
             Notification startNotification = new Notification()
             {
@@ -53,11 +54,17 @@ namespace SignalRExample.Controllers
 
             await Task.Delay(5000);
 
+            var item = new WeatherForecast
+            {
+                Date = DateTime.Now.AddDays(rng.Next(1, 30)),
+                TemperatureC = rng.Next(-20, 55),
+                Summary = Summaries[rng.Next(Summaries.Length)]
+            };
+
             Notification completeNotification = new Notification()
             {
                 Type = NotificationType.Complete,
-                Result = weatherForecast
-
+                Result = item
             };
             await _hubContext.Clients.All.SendMessage(completeNotification);
         }
