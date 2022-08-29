@@ -32,6 +32,9 @@
             <span *ngIf="loading" ><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Ожидайте...</span>
         </button> 
     </div>
+    <div class="mt-4 progress" *ngIf="loading">
+        <div class="progress-bar" role="progressbar" [style.width.%]="progress" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">{{ progress }}%</div>
+      </div>
     <div *ngIf="errorMessage" class="alert alert-danger">  
         Error: {{ errorMessage }}  
     </div> 

@@ -5,6 +5,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using SignalRExample.Hubs;
+using SignalRExample.Queue;
+using SignalRExample.Services;
 using System.Text.Json.Serialization;
 
 namespace SignalRExample
@@ -40,6 +42,13 @@ namespace SignalRExample
             services.AddSignalR().AddJsonProtocol(options =>
             {
                 options.PayloadSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+            });
+
+            services.AddHostedService<QueuedHostedService>();
+            services.AddSingleton<IBackgroundTaskQueue>(ctx =>
+            {
+                var queueCapacity = 100; // надо определять в переменных окружения
+                return new BackgroundTaskQueue(queueCapacity);
             });
         }
 
