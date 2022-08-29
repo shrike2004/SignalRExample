@@ -39,6 +39,10 @@ namespace SignalRExample.Controllers
             _taskQueue = taskQueue;
         }
 
+        /// <summary>
+        /// Получаем список погоды
+        /// </summary>
+        /// <returns>список погоды</returns>
         [HttpGet]
         public IEnumerable<WeatherForecast> Get()
         {
@@ -52,6 +56,9 @@ namespace SignalRExample.Controllers
             .ToArray();
         }
 
+        /// <summary>
+        /// Стартуем создание пункта погоды, длительная операция
+        /// </summary>
         [HttpPost]
         public async Task Create()
         {
@@ -61,11 +68,14 @@ namespace SignalRExample.Controllers
                 Loading = true
             };
             await _hubContext.Clients.All.SendMessage(startNotification);
+
+            // Кладем в очередь задание на создание новой строки
             await _taskQueue.QueueBackgroundWorkItemAsync(CreateWorkItem);
         }
 
 
         /// <summary>
+        /// Работа по созданию погоды
         /// https://docs.microsoft.com/ru-ru/aspnet/core/fundamentals/host/hosted-services?view=aspnetcore-6.0&tabs=visual-studio
         /// Раздел "Фоновые задачи в очереди"
         /// </summary>
@@ -91,6 +101,8 @@ namespace SignalRExample.Controllers
                 }
 
                 delayLoop++;
+
+                // отправляем текущий прогресс на клиент
                 Notification completeNotification = new Notification()
                 {
                     Type = NotificationType.InProcess,
@@ -98,13 +110,14 @@ namespace SignalRExample.Controllers
                     Progress = delayLoop * 33
                 };
                 await _hubContext.Clients.All.SendMessage(completeNotification);
+
                 _logger.LogInformation("Queued Background Task {Guid} is running. "
                                        + "{DelayLoop}/3", guid, delayLoop);
             }
 
             if (delayLoop == 3)
             {
-                _logger.LogInformation("Queued Background Task {Guid} is complete.", guid);
+                // рандомная строка погоды
                 var item = new WeatherForecast
                 {
                     Date = DateTime.Now.AddDays(rng.Next(1, 30)),
@@ -112,6 +125,7 @@ namespace SignalRExample.Controllers
                     Summary = Summaries[rng.Next(Summaries.Length)]
                 };
 
+                // конечное уведомление о завершении
                 Notification completeNotification = new Notification()
                 {
                     Type = NotificationType.Complete,
@@ -120,6 +134,8 @@ namespace SignalRExample.Controllers
                     Result = item,
                 };
                 await _hubContext.Clients.All.SendMessage(completeNotification);
+
+                _logger.LogInformation("Queued Background Task {Guid} is complete.", guid);
             }
             else
             {
