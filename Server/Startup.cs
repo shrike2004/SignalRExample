@@ -23,8 +23,7 @@ namespace SignalRExample
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            //services.AddHostedService<ConsumeScopedServiceHostedService>();
-            //services.AddScoped<IScopedProcessingService, ScopedProcessingService>();
+            services.AddHttpContextAccessor();
 
             services.AddControllers()
                 .AddJsonOptions(opts =>

@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Logging;
+using System.Threading.Tasks;
 
 namespace SignalRExample.Hubs
 {
@@ -7,5 +9,17 @@ namespace SignalRExample.Hubs
     /// </summary>
     public class NotifyHub : Hub<IHubClient>
     {
+        private readonly ILogger<NotifyHub> _logger;
+
+        public NotifyHub(ILogger<NotifyHub> logger)
+        {
+            _logger = logger;
+        }
+
+        public override Task OnConnectedAsync()
+        {
+            _logger.LogInformation("Who is connected: " + Context.ConnectionId);
+            return base.OnConnectedAsync();
+        }
     }
 }

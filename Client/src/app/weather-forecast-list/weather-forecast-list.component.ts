@@ -16,10 +16,12 @@ export class WeatherForecastListComponent implements OnInit {
   errorMessage = '';
   loading = false;
   progress = 0;
+  connectionId: string | null = null;
 
   constructor(private weatherForecastService: WeatherForecastService) {}
 
   ngOnInit(): void {
+    const self = this;
     this.getWeatherForecastData();
 
     const connection = new signalR.HubConnectionBuilder()
@@ -30,7 +32,10 @@ export class WeatherForecastListComponent implements OnInit {
     connection
       .start()
       .then(function () {
-        console.log('SignalR Connected!');
+        console.log(
+          'SignalR Connected! ConnectionId is: ' + connection.connectionId
+        );
+        self.connectionId = connection.connectionId;
       })
       .catch(function (err) {
         return console.error(err.toString());
@@ -58,17 +63,7 @@ export class WeatherForecastListComponent implements OnInit {
 
   create(): void {
     this.weatherForecastService
-      .createWeatherForecast()
+      .createWeatherForecast(this.connectionId!)
       .subscribe((error: any) => (this.errorMessage = <any>error));
-  }
-
-  onSaveComplete(): void {
-    this.weatherForecastService.getWeatherForecasts().subscribe(
-      (weatherForecasts) => {
-        this.weatherForecasts = weatherForecasts;
-        this.filteredWeatherForecast = this.weatherForecasts;
-      },
-      (error) => (this.errorMessage = <any>error)
-    );
   }
 }

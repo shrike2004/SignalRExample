@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 using SignalRExample.Hubs;
@@ -19,6 +20,7 @@ namespace SignalRExample.Controllers
         Random rng = new Random();
         private readonly IHubContext<NotifyHub, IHubClient> _hubContext;
         private readonly IBackgroundTaskQueue _taskQueue;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
         private static readonly string[] Summaries = new[]
         {
@@ -30,13 +32,22 @@ namespace SignalRExample.Controllers
         public WeatherForecastController(
             ILogger<WeatherForecastController> logger,
             IHubContext<NotifyHub, IHubClient> hubContext,
-            IBackgroundTaskQueue taskQueue
-
+            IBackgroundTaskQueue taskQueue,
+            IHttpContextAccessor httpContextAccessor
             )
         {
             _logger = logger;
             _hubContext = hubContext;
             _taskQueue = taskQueue;
+            _httpContextAccessor = httpContextAccessor;
+        }
+
+        private string ConnectionId
+        {
+            get
+            {
+                return _httpContextAccessor?.HttpContext?.Request.Headers["x-signalr-connection"] ?? "";
+            }
         }
 
         /// <summary>
@@ -67,10 +78,12 @@ namespace SignalRExample.Controllers
                 Type = NotificationType.Start,
                 Loading = true
             };
-            await _hubContext.Clients.All.SendMessage(startNotification);
+            await _hubContext.Clients.Client(ConnectionId).SendMessage(startNotification);
+
+            string connectionId = ConnectionId;
 
             // Кладем в очередь задание на создание новой строки
-            await _taskQueue.QueueBackgroundWorkItemAsync(CreateWorkItem);
+            await _taskQueue.QueueBackgroundWorkItemAsync(ct => CreateWorkItem(connectionId, ct));
         }
 
 
@@ -79,7 +92,7 @@ namespace SignalRExample.Controllers
         /// https://docs.microsoft.com/ru-ru/aspnet/core/fundamentals/host/hosted-services?view=aspnetcore-6.0&tabs=visual-studio
         /// Раздел "Фоновые задачи в очереди"
         /// </summary>
-        private async ValueTask CreateWorkItem(CancellationToken token)
+        private async ValueTask CreateWorkItem(string connectionId, CancellationToken token )
         {
             // Simulate three 2-second tasks to complete
             // for each enqueued work item
@@ -87,7 +100,7 @@ namespace SignalRExample.Controllers
             int delayLoop = 0;
             var guid = Guid.NewGuid().ToString();
 
-            _logger.LogInformation("Queued Background Task {Guid} is starting.", guid);
+            _logger.LogInformation("Queued Background Task {Guid} is starting. ConnectionId id {connectionId}", guid, connectionId);
 
             while (!token.IsCancellationRequested && delayLoop < 3)
             {
@@ -109,7 +122,7 @@ namespace SignalRExample.Controllers
                     Loading = true,
                     Progress = delayLoop * 33
                 };
-                await _hubContext.Clients.All.SendMessage(completeNotification);
+                await _hubContext.Clients.Client(connectionId).SendMessage(completeNotification);
 
                 _logger.LogInformation("Queued Background Task {Guid} is running. "
                                        + "{DelayLoop}/3", guid, delayLoop);
@@ -133,7 +146,7 @@ namespace SignalRExample.Controllers
                     Progress = 100,
                     Result = item,
                 };
-                await _hubContext.Clients.All.SendMessage(completeNotification);
+                await _hubContext.Clients.Client(connectionId).SendMessage(completeNotification);
 
                 _logger.LogInformation("Queued Background Task {Guid} is complete.", guid);
             }

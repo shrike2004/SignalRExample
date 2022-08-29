@@ -18,8 +18,11 @@ export class WeatherForecastService {
       .pipe(catchError(this.handleError));
   }
 
-  createWeatherForecast(): Observable<WeatherForecast> {
-    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+  createWeatherForecast(connectionId: string): Observable<WeatherForecast> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'x-signalr-connection': connectionId,
+    });
     return this.http
       .post<WeatherForecast>(this.weatherForecastUrl, null, {
         headers: headers,
