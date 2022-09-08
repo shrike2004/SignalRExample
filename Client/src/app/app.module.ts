@@ -5,10 +5,18 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { WeatherForecastListComponent } from './weather-forecast-list/weather-forecast-list.component';
 import { HttpClientModule } from '@angular/common/http';
+import { ReportComponent } from './report/report.component';
+import { DxButtonModule, DxPivotGridModule } from 'devextreme-angular';
 
 @NgModule({
-  declarations: [AppComponent, WeatherForecastListComponent],
-  imports: [BrowserModule, AppRoutingModule, HttpClientModule],
+  declarations: [AppComponent, WeatherForecastListComponent, ReportComponent],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    HttpClientModule,
+    DxButtonModule,
+    DxPivotGridModule,
+  ],
   providers: [],
   bootstrap: [AppComponent],
 })
