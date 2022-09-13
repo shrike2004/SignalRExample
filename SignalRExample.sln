@@ -28,6 +28,8 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "Client", "Client\", "{62F5E
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{83F38A82-0FE2-4815-9681-073B301232AA}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SignalRExample.Data", "SignalRExample.Data\SignalRExample.Data.csproj", "{4E02D61C-BFB0-47E4-8297-0BFADC776249}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -46,6 +48,10 @@ Global
 		{83F38A82-0FE2-4815-9681-073B301232AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{83F38A82-0FE2-4815-9681-073B301232AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{83F38A82-0FE2-4815-9681-073B301232AA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4E02D61C-BFB0-47E4-8297-0BFADC776249}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4E02D61C-BFB0-47E4-8297-0BFADC776249}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4E02D61C-BFB0-47E4-8297-0BFADC776249}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4E02D61C-BFB0-47E4-8297-0BFADC776249}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

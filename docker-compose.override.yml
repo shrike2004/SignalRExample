@@ -1,9 +1,23 @@
 version: '3.4'
 
 services:
+  postgres:
+    container_name: rad-db
+    ports:
+    - 5441:5432
+    hostname: rad-db
+    environment:
+    - POSTGRES_USER=postgres
+    - POSTGRES_PASSWORD=123456
+    volumes:
+    - D:/Work/1Rassvet/DockerVolumes/Db/.db/data:/var/lib/postgresql/data
+
   signalrexample:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:80
+      - "ConnectionStrings__DefaultConnection=User ID=postgres;Password=123456;Host=postgres;Port=5432;Database=postgres;Pooling=true;"
     ports:
       - "5010:80"
+
+    

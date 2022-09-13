@@ -1,9 +1,11 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using SignalRExample.Data;
 using SignalRExample.Hubs;
 using SignalRExample.Queue;
 using SignalRExample.Services;
@@ -49,6 +51,9 @@ namespace SignalRExample
                 var queueCapacity = 100; // надо определять в переменных окружения
                 return new BackgroundTaskQueue(queueCapacity);
             });
+
+            services.AddDbContext<PostgresContext>(options =>
+            options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection"), b => b.MigrationsAssembly("SignalRExample")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
