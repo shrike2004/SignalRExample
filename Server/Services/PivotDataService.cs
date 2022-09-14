@@ -32,9 +32,13 @@ namespace SignalRExample.Services
                     Vr = GetRandomNumberString(),
                     Ou = GetRandomNumberString(),
                     Nr = GetRandomNumberString(),
+                    Kosgu = GetRandomNumberString(),
+                    NrTo = GetRandomNumberString(),
                     DocSid = GetRandomNumber(111111111, 222222222),
-                    SumPartType = new List<string> { "БА", "ЛБО", "ПОФ" }[random.Next(0, 2)],
+                    PbsSort = i.ToString(),
+                    SumPartType = new List<string> { "БА", "ЛБО", "ПОФ" }[random.Next(0, 3)],
                     SumMesureName = "Распределено",
+                    YearNum = DateTime.Today.Year + random.Next(0, 3),
                     Value = random.Next(100000, 1000000),
                 };
                 items.Add(presentor);

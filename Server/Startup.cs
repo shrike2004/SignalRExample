@@ -25,6 +25,12 @@ namespace SignalRExample
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<PostgresContext>(options =>
+            options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection"), b => b.MigrationsAssembly("SignalRExample")));
+            services.AddMemoryCache();
+
+            services.AddScoped<PivotDataService>();
+
             services.AddHttpContextAccessor();
 
             services.AddControllers()
@@ -52,8 +58,10 @@ namespace SignalRExample
                 return new BackgroundTaskQueue(queueCapacity);
             });
 
-            services.AddDbContext<PostgresContext>(options =>
-            options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection"), b => b.MigrationsAssembly("SignalRExample")));
+
+
+
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

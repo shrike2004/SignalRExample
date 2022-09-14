@@ -31,7 +31,7 @@ namespace SignalRExample.Controllers
         [HttpGet]
         public IEnumerable<PresentorPivotRow> Get()
         {
-            return _service.List();
+            return _service.List().Take(10000);
         }
     }
 }

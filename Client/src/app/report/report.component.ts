@@ -7,12 +7,11 @@ import { PivotGridDataSource, ReportService } from '../report.service';
   templateUrl: './report.component.html',
   styleUrls: ['./report.component.scss'],
 })
-export class ReportComponent implements OnInit {
+export class ReportComponent {
   title = 'Getting Started with DevExtreme PivotGrid';
   dataSource: PivotGridDataSource;
+
   constructor(service: ReportService) {
     this.dataSource = service.getPivotGridDataSource();
   }
-
-  ngOnInit(): void {}
 }

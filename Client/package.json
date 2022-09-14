@@ -23,6 +23,7 @@
     "bootstrap-icons": "^1.9.1",
     "devextreme": "22.1.5",
     "devextreme-angular": "22.1.5",
+    "devextreme-aspnet-data-nojquery": "^2.8.6",
     "font-awesome": "^4.7.0",
     "rxjs": "~7.5.0",
     "tslib": "^2.3.0",
