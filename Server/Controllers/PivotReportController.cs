@@ -1,10 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using DevExtreme.AspNet.Data;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SignalRExample.Data.Entity;
 using SignalRExample.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace SignalRExample.Controllers
 {
@@ -29,9 +32,22 @@ namespace SignalRExample.Controllers
         /// </summary>
         /// <returns>список pivot данных</returns>
         [HttpGet]
-        public IEnumerable<PresentorPivotRow> Get()
+        public async Task<IActionResult> Get(DataSourceLoadOptions loadOptions)
         {
-            return _service.List().Take(10000);
+            loadOptions.PrimaryKey = new[] { "DocSid" };
+            loadOptions.PaginateViaPrimaryKey = true;
+
+            var source = _service.List();
+
+            return Ok(await DataSourceLoader.LoadAsync(source, loadOptions));
+        }
+
+        [HttpGet]
+        [Route("GetAll")]
+        public IActionResult Get()
+        {
+            var source = _service.List().Take(2000);
+            return Ok(source);
         }
     }
 }

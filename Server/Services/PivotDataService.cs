@@ -1,9 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Logging;
 using SignalRExample.Data;
+using SignalRExample.Data.Data;
 using SignalRExample.Data.Entity;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SignalRExample.Services
 {
@@ -11,22 +13,29 @@ namespace SignalRExample.Services
     {
         Random random = new Random();
         PostgresContext _context;
-        private IMemoryCache _cache;
-        public static string PresentorPivotRowKey => "_PresentorPivotRow";
+        private InMemoryContext _inMemoryContext;
+        private readonly ILogger<PivotDataService> _logger;
 
-        public PivotDataService(PostgresContext context, IMemoryCache memoryCache)
+        public PivotDataService(
+            PostgresContext context,
+            InMemoryContext inMemoryContext,
+            ILogger<PivotDataService> logger
+            )
         {
             _context = context;
-            _cache = memoryCache;
+            _inMemoryContext = inMemoryContext;
+            _logger = logger;
         }
 
         public void GenerateData()
         {
             var items = new List<PresentorPivotRow>();
-            for (int i = 0; i <= 2000000; i++)
+            for (int i = 0; i < 2000000; i++)
             {
                 var presentor = new PresentorPivotRow
                 {
+                    DocSid = i + 1000,
+                    PbsName = "ПБС номер " + GetRandomNumberString(1, 100),
                     RzPrz = GetRandomNumberString(),
                     Csr = GetRandomNumberString(),
                     Vr = GetRandomNumberString(),
@@ -34,27 +43,23 @@ namespace SignalRExample.Services
                     Nr = GetRandomNumberString(),
                     Kosgu = GetRandomNumberString(),
                     NrTo = GetRandomNumberString(),
-                    DocSid = GetRandomNumber(111111111, 222222222),
                     PbsSort = i.ToString(),
                     SumPartType = new List<string> { "БА", "ЛБО", "ПОФ" }[random.Next(0, 3)],
-                    SumMesureName = "Распределено",
+                    SumMesureName = new List<string> { "Распределено", "Доведено" }[random.Next(0, 2)],
                     YearNum = DateTime.Today.Year + random.Next(0, 3),
+                    SumDate = DateTime.Today.AddDays(-random.Next(0, 100)),
                     Value = random.Next(100000, 1000000),
                 };
                 items.Add(presentor);
             }
-            _cache.Set(PresentorPivotRowKey, items);
+            _inMemoryContext.PresentorPivotRows.AddRange(items);
+            var saved = _inMemoryContext.SaveChanges();
+            _logger.LogInformation($"Saved: {saved}");
         }
 
-        public IEnumerable<PresentorPivotRow> List()
+        public IQueryable<PresentorPivotRow> List()
         {
-            List<PresentorPivotRow> cacheEntry;
-            if (!_cache.TryGetValue(PresentorPivotRowKey, out cacheEntry))
-            {
-                GenerateData();
-                _cache.TryGetValue(PresentorPivotRowKey, out cacheEntry);
-            }
-            return cacheEntry;
+            return _inMemoryContext.PresentorPivotRows.AsNoTracking();
         }
 
         private long GetRandomNumber(int? start = null, int? end = null)
@@ -66,7 +71,5 @@ namespace SignalRExample.Services
         {
             return GetRandomNumber(start, end).ToString();
         }
-
-
     }
 }

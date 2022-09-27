@@ -6,9 +6,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using SignalRExample.Data;
+using SignalRExample.Data.Data;
 using SignalRExample.Hubs;
 using SignalRExample.Queue;
 using SignalRExample.Services;
+using System;
 using System.Text.Json.Serialization;
 
 namespace SignalRExample
@@ -27,7 +29,8 @@ namespace SignalRExample
         {
             services.AddDbContext<PostgresContext>(options =>
             options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection"), b => b.MigrationsAssembly("SignalRExample")));
-            services.AddMemoryCache();
+
+            services.AddDbContext<InMemoryContext>(opt => opt.UseInMemoryDatabase(databaseName: "test"));
 
             services.AddScoped<PivotDataService>();
 
@@ -57,11 +60,6 @@ namespace SignalRExample
                 var queueCapacity = 100; // надо определять в переменных окружения
                 return new BackgroundTaskQueue(queueCapacity);
             });
-
-
-
-
-
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -93,6 +91,11 @@ namespace SignalRExample
             {
                 endpoints.MapControllers();
             });
+
+            // Add test data
+            var scopeeee = app.ApplicationServices.CreateScope();
+            var pivotDataService = scopeeee.ServiceProvider.GetRequiredService<PivotDataService>();
+            pivotDataService.GenerateData();
         }
     }
 }
