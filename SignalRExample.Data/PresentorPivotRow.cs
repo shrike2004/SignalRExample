@@ -5,12 +5,14 @@ using System.Diagnostics.CodeAnalysis;
 using JetBrains.Annotations;
 
 
-namespace SignalRExample.Data.Entity
+namespace SignalRExample.Data
 {
     /// <summary> Строка отображения данных АО по БА/ЛБО </summary>
-    public sealed class PresentorPivotRow
+    public partial class PresentorPivotRow
     {
         [Key]
+        public long Id { get; set; }
+
         public long DocSid { get; set; }
 
         [Description("Рз, Прз")]

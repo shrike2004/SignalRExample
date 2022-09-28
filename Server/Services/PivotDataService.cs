@@ -2,10 +2,11 @@
 using Microsoft.Extensions.Logging;
 using SignalRExample.Data;
 using SignalRExample.Data.Data;
-using SignalRExample.Data.Entity;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace SignalRExample.Services
 {
@@ -30,10 +31,11 @@ namespace SignalRExample.Services
         public void GenerateData()
         {
             var items = new List<PresentorPivotRow>();
-            for (int i = 0; i < 2000000; i++)
+            for (int i = 1; i <= 2000000; i++)
             {
                 var presentor = new PresentorPivotRow
                 {
+                    Id = i + 1000,
                     DocSid = i + 1000,
                     PbsName = "ПБС номер " + GetRandomNumberString(1, 100),
                     RzPrz = GetRandomNumberString(),
@@ -52,14 +54,27 @@ namespace SignalRExample.Services
                 };
                 items.Add(presentor);
             }
-            _inMemoryContext.PresentorPivotRows.AddRange(items);
-            var saved = _inMemoryContext.SaveChanges();
-            _logger.LogInformation($"Saved: {saved}");
+
+            var timer = new Stopwatch();
+            timer.Start();
+
+            _context.Database.ExecuteSqlRaw("TRUNCATE TABLE public.\"PresentorPivotRows\"");
+            _context.SaveChanges();
+
+            timer.Stop();
+            _logger.LogInformation($"Deleted all rows in: {timer.ElapsedMilliseconds} ms");
+
+            timer.Restart();
+            //_context.PresentorPivotRows.AddRange(items);
+            _context.BulkInsert(items);
+            timer.Stop();
+
+            _logger.LogInformation($"Saved {items.Count} items in {timer.ElapsedMilliseconds} ms");
         }
 
         public IQueryable<PresentorPivotRow> List()
         {
-            return _inMemoryContext.PresentorPivotRows.AsNoTracking();
+            return _context.PresentorPivotRows.AsNoTracking();
         }
 
         private long GetRandomNumber(int? start = null, int? end = null)

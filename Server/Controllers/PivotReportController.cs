@@ -1,7 +1,6 @@
 ﻿using DevExtreme.AspNet.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using SignalRExample.Data.Entity;
 using SignalRExample.Services;
 using System;
 using System.Collections.Generic;
@@ -46,7 +45,7 @@ namespace SignalRExample.Controllers
         [Route("GetAll")]
         public IActionResult Get()
         {
-            var source = _service.List().Take(2000);
+            var source = _service.List().OrderBy(x => x.DocSid).Take(2000);
             return Ok(source);
         }
     }

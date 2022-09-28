@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using SignalRExample.Data.Entity;
 
 namespace SignalRExample.Data.Data
 {

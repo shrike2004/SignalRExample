@@ -28,6 +28,8 @@ namespace SignalRExample.Data
         public virtual DbSet<ToRezerv> ToRezervs { get; set; }
         public virtual DbSet<ToRezervRow> ToRezervRows { get; set; }
 
+        public virtual DbSet<PresentorPivotRow> PresentorPivotRows { get; set; }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
         }
